@@ -10,6 +10,30 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+export const signIn = (formData) => API.post('/user/signin', formData);
+export const signUp = (formData) => API.post('/user/signup', formData);
+
+export const fetchCarrier = (id) => API.get(`/carriers/${id}`);
+export const fetchCarriers = (page) => API.get(`/carriers?page=${page}`);
+export const fetchCarrierBySearch = (searchQuery) => API.get(`/carriers/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
+export const createCarrier = (newCarrier) => API.post('/carriers', newCarrier);
+export const updateCarrier = (id, updatedCarrier) => API.patch(`/carriers/${id}`, updatedCarrier);
+export const deleteCarrier = (id) => API.delete(`/carriers/${id}`);
+
+export const fetchLoad = (id) => API.get(`/loads/${id}`);
+export const fetchLoads = (page) => API.get(`/loads?page=${page}`);
+export const fetchLoadBySearch = (searchQuery) => API.get(`/loads/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
+export const createLoad = (newLoad) => API.post('/loads', newLoad);
+export const updateLoad = (id, updatedLoad) => API.patch(`/loads/${id}`, updatedLoad);
+export const deleteLoad = (id) => API.delete(`/loads/${id}`);
+
+export const fetchInvoice = (id) => API.get(`/invoices/${id}`);
+export const fetchInvoices = (page) => API.get(`/invoices?page=${page}`);
+export const fetchInvoiceBySearch = (searchQuery) => API.get(`/invoices/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
+export const createInvoice = (newInvoice) => API.post('/invoices', newInvoice);
+export const updateInvoice = (id, updatedInvoice) => API.patch(`/invoices/${id}`, updatedInvoice);
+export const deleteInvoice = (id) => API.delete(`/invoices/${id}`);
+
 export const fetchPost = (id) => API.get(`/posts/${id}`);
 export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
 export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
@@ -20,6 +44,9 @@ export const comment = (value, id) => API.post(`/posts/${id}/commentPost`, { val
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
-
-export const signIn = (formData) => API.post('/user/signin', formData);
-export const signUp = (formData) => API.post('/user/signup', formData);
+export const fetchDraft = (draftDateFrom, draftDateTo) => API.get('/drafts', {
+  params: {
+    draftDateFrom,
+    draftDateTo,
+  },
+});

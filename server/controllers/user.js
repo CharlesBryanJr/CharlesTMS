@@ -60,3 +60,15 @@ export const users = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+const handleErrorResponse = (res, error) => {
+  if (error.response?.data) {
+    const { code, errors, status } = error.response.data;
+    console.log('Error Code:', code);
+    console.log('Error Message:', errors[0]?.message);
+    console.log('Status:', status);
+    return res.status(error.response.status).json({ code, errors, status });
+  } else {
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
