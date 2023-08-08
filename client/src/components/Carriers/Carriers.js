@@ -50,14 +50,17 @@ const Carriers = ({ setCurrentId }) => {
   }
 
   return (
-    <Grid className={classes.container} container alignItems="stretch" spacing={3}>
-      {carriers.data.map((carrier) => (
-        <Grid key={carrier._id} item xs={12} sm={12} md={6} lg={3}>
-          <Carrier carrier={carrier} setCurrentId={setCurrentId} />
-        </Grid>
-      ))}
-    </Grid>
+    <div>
+      <h1>Carriers</h1>
+      <Grid className={classes.container} container alignItems="stretch" spacing={3}>
+        {carriers.data.map((carrier) => (
+          <Grid key={carrier._id} item xs={12} sm={12} md={6} lg={3}>
+            <Carrier carrier={carrier} setCurrentId={setCurrentId} />
+          </Grid>
+        ))}
+      </Grid>
+    </div>
   );
-};
+};  
 
 export default Carriers;

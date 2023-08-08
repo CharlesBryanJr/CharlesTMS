@@ -50,13 +50,17 @@ const Invoices = ({ setCurrentId }) => {
   }
 
   return (
-    <Grid className={classes.container} container alignItems="stretch" spacing={3}>
-      {invoices.data.map((invoice) => (
-        <Grid key={invoice._id} item xs={12} sm={12} md={6} lg={3}>
-          <Invoice invoice={invoice} setCurrentId={setCurrentId} />
-        </Grid>
-      ))}
-    </Grid>
+    <div>
+        <h1>Invoices</h1>
+        <br/>
+        <Grid className={classes.container} container alignItems="stretch" spacing={3}>
+        {invoices.data.map((invoice) => (
+          <Grid key={invoice._id} item xs={12} sm={12} md={6} lg={3}>
+            <Invoice invoice={invoice} setCurrentId={setCurrentId} />
+          </Grid>
+        ))}
+      </Grid>
+    </div>
   );
 };
 

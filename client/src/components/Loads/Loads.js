@@ -50,13 +50,17 @@ const Loads = ({ setCurrentId }) => {
   }
 
   return (
-    <Grid className={classes.container} container alignItems="stretch" spacing={3}>
-      {loads.data.map((load) => (
-        <Grid key={load._id} item xs={12} sm={12} md={6} lg={3}>
-          <Load load={load} setCurrentId={setCurrentId} />
-        </Grid>
-      ))}
-    </Grid>
+    <div>
+      <h1>Loads</h1>
+      <br/>
+      <Grid className={classes.container} container alignItems="stretch" spacing={3}>
+        {loads.data.map((load) => (
+          <Grid key={load._id} item xs={12} sm={12} md={6} lg={3}>
+            <Load load={load} setCurrentId={setCurrentId} />
+          </Grid>
+        ))}
+      </Grid>
+    </div>
   );
 };
 

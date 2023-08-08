@@ -115,7 +115,8 @@ const Draft = () => {
   return (
     <form autoComplete="off" onSubmit={handleSubmit} className={classes.form}>
       <Container>
-        <Typography variant="h6">Draft Data</Typography>
+        <h1>Draft Data</h1>
+        <br/>
         <Typography variant="h6">Dates must be in the form of YYYY-MM-DD</Typography>
         <TextField
           type="text"

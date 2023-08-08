@@ -10,40 +10,38 @@ const CreateInvoice = ({ setCurrentId }) => {
   const dispatch = useDispatch();
 
   const empty_invoiceData = {
-    "ExternalInvoiceKey": "a1Z4v000005wL3rEAE",
-    "ExternalPayeeKey": "0016g00000NNZLqAAP",
+    "ExternalInvoiceKey": "",
+    "ExternalPayeeKey": "",
     "ExternalLoadKey": "",
-    "InvoiceImportedStatusId": 2,
-    "InvoiceNo": "0670441",
-    "ReferenceNo": "240141",
-    "GrossAmount": 2500,
+    "InvoiceImportedStatusId": 0,
+    "InvoiceNo": "",
+    "ReferenceNo": "",
+    "GrossAmount": 0,
     "PayorAdjustmentAmount": 0,
-    "NetAmount": 2500,
-    "DueDate": "2021-04-29",
-    "ApprovedDate": "2021-04-01",
-    "Term": "SP30",
+    "NetAmount": 0,
+    "DueDate": "",
+    "ApprovedDate": "",
     "StatusNote": "",
-    "Division": "USD",
     "LineItems": [
       {
-        "Amount": 1200,
-        "Description": "Linehaul"
+        "Amount": null,
+        "Description": ""
       },
       {
-        "Amount": -150,
-        "Description": "Late Delivery"
+        "Amount": null,
+        "Description": ""
       }
     ],
     "AdditionalData": [
       {
-        "Field": "Load#",
-        "Value": "123456",
-        "Type": 1
+        "Field": "",
+        "Value": "",
+        "Type": null
       },
       {
-        "Field": "POD#",
-        "Value": "888888801",
-        "Type": 1
+        "Field": "",
+        "Value": "",
+        "Type": null
       }
     ]
   };  
@@ -53,6 +51,7 @@ const CreateInvoice = ({ setCurrentId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(invoiceData);
     dispatch(createInvoice(invoiceData));
     setInvoiceData((prevInvoiceData) => {
       return { ...empty_invoiceData };
@@ -73,7 +72,20 @@ const CreateInvoice = ({ setCurrentId }) => {
           }
           currentLevel = currentLevel[nestedProperty];
         }
-        currentLevel[nestedProperties[nestedProperties.length - 1]] = value;
+  
+        if (nestedProperties[0] === "LineItems") {
+          const itemIndex = parseInt(nestedProperties[1]);
+          if (!currentLevel[nestedProperties[0]]) {
+            currentLevel[nestedProperties[0]] = [];
+          }
+          currentLevel[nestedProperties[0]][itemIndex] = {
+            ...currentLevel[nestedProperties[0]][itemIndex],
+            [nestedProperties[2]]: value,
+          };
+        } else {
+          currentLevel[nestedProperties[nestedProperties.length - 1]] = value;
+        }
+  
         return { ...updatedData };
       });
     } else {
@@ -81,36 +93,14 @@ const CreateInvoice = ({ setCurrentId }) => {
         return { ...prevInvoiceData, [name]: value };
       });
     }
-  };
-  const generateRandomData = (empty_invoiceData) => {
-    const randomInvoiceData = {};
-  
-    for (const key in empty_invoiceData) {
-      if (empty_invoiceData.hasOwnProperty(key)) {
-        if (typeof empty_invoiceData[key] === 'string') {
-          randomInvoiceData[key] = generateRandomString();
-        } else if (typeof empty_invoiceData[key] === 'boolean') {
-          randomInvoiceData[key] = generateRandomBoolean();
-        } else if (typeof empty_invoiceData[key] === 'number') {
-          randomInvoiceData[key] = generateRandomNumber();
-        } else if (Array.isArray(empty_invoiceData[key])) {
-          randomInvoiceData[key] = generateRandomArray();
-        } else if (typeof empty_invoiceData[key] === 'object') {
-          randomInvoiceData[key] = generateRandomObject();
-        }
-      }
-    }
-    setInvoiceData(randomInvoiceData);
-  };
+  };  
 
   const generateRandomString = () => {
-    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const length = Math.floor(Math.random() * 10) + 1;
     let result = "";
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
   };
@@ -119,30 +109,104 @@ const CreateInvoice = ({ setCurrentId }) => {
     return Math.random() < 0.5;
   };
 
-  const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100) + 1;
-  };
+  const generateRandomNumber = (base = 0, min = 1, max = 100) => {
+    const randomValue = Math.floor(Math.random() * (max - min + 1)) + min;
+    return base + randomValue;
+  };  
 
-  const generateRandomArray = () => {
-    const length = Math.floor(Math.random() * 5) + 1;
-    const array = [];
+  const generateRandomLineItems = (length) => {
+    const lineItems = [];
     for (let i = 0; i < length; i++) {
-      array.push(generateRandomString());
+      lineItems.push({
+        Amount: generateRandomNumber(0, 1000),
+        Description: generateRandomString(),
+      });
     }
-    return array;
+    return lineItems;
+  };  
+
+  const generateRandomAdditionalData = (length) => {
+    const arr = [];
+    for (let i = 0; i < length; i++) {
+      arr.push({
+        Field: generateRandomString(),
+        Value: generateRandomString(),
+        Type: 1,
+      });
+    }
+    return arr;
   };
 
-  const generateRandomObject = () => {
-    const obj = {};
-    obj.name = generateRandomString();
-    obj.line_1 = generateRandomString();
-    obj.line_2 = generateRandomString();
-    obj.city = generateRandomString();
-    obj.state = generateRandomString();
-    obj.postal_code = generateRandomString();
-    return obj;
+  const generateCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   };
   
+  const generateFutureDate = (startDate_str, daysToAdd) => {
+    const startDate = new Date(startDate_str);
+    const futureDate = new Date(startDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+    const year = futureDate.getFullYear();
+    const month = futureDate.getMonth() + 1;
+    const day = futureDate.getDate();
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };  
+  
+  const generateRandomObject = () => {
+    const obj = {
+      "ExternalPayeeKey": generateRandomString()
+    }
+    return obj;
+  };
+
+  const generateRandomData = (empty_InvoiceData) => {
+    const randomInvoiceData = {};
+    for (const key in empty_InvoiceData) {
+      if (empty_InvoiceData.hasOwnProperty(key)) {
+        if (key === 'InvoiceImportedStatusId') {
+          randomInvoiceData[key] = generateRandomNumber(0, 1, 3);
+        } else if (key === 'GrossAmount') {
+          randomInvoiceData[key] = generateRandomNumber(1000, 4000);
+        } else if (key === 'PayorAdjustmentAmount') {
+          randomInvoiceData[key] = generateRandomNumber(1, 500);
+        } else if (key === 'NetAmount') {
+          randomInvoiceData[key] = randomInvoiceData['GrossAmount'] + randomInvoiceData['PayorAdjustmentAmount']
+        } else if (key === 'ApprovedDate') {
+          randomInvoiceData[key] = generateCurrentDate();
+        } else if (key === 'DueDate') {
+          const startDate = generateCurrentDate();
+          const daysToAdd = 30;
+          randomInvoiceData[key] = generateFutureDate(startDate, daysToAdd);
+        } else if (typeof empty_InvoiceData[key] === 'string') {
+          randomInvoiceData[key] = generateRandomString();
+        } else if (typeof empty_InvoiceData[key] === 'boolean') {
+          randomInvoiceData[key] = generateRandomBoolean();
+        } else if (typeof empty_InvoiceData[key] === 'number') {
+          randomInvoiceData[key] = generateRandomNumber();
+        } else if (Array.isArray(empty_InvoiceData[key])) {
+          if (key === "LineItems") {
+            const length = generateRandomNumber(1, 3);
+            randomInvoiceData[key] = generateRandomLineItems(length);
+          } else if (key === "AdditionalData") {
+            const length = generateRandomNumber(1, 3);
+            randomInvoiceData[key] = generateRandomAdditionalData(length);
+          }
+        } else if (typeof empty_InvoiceData[key] === 'object') {
+          randomInvoiceData[key] = generateRandomObject();
+        }
+      }
+    }
+    return randomInvoiceData;
+  };
+
+  const handleGenerateRandomData = (e) => {
+    e.preventDefault();
+    const randomInvoiceData = generateRandomData(empty_invoiceData);
+    setInvoiceData(randomInvoiceData);
+  };
+
   return (
     <form autoComplete="off" onSubmit={handleSubmit} className={classes.form}>
       <Button 
@@ -150,7 +214,7 @@ const CreateInvoice = ({ setCurrentId }) => {
         color="primary" 
         type="submit" 
         className={classes.button} 
-        onClick={generateRandomData}
+        onClick={handleGenerateRandomData}
       >
         Generate Random Invoice Data
       </Button>
@@ -164,235 +228,196 @@ const CreateInvoice = ({ setCurrentId }) => {
         fullWidth
         className={classes.textField}
         />
-
         <TextField
-        name="ExternalPayeeKey"
-        label="ExternalPayeeKey"
-        value={invoiceData.ExternalPayeeKey || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
+          name="ExternalPayeeKey"
+          label="ExternalPayeeKey"
+          value={invoiceData.ExternalPayeeKey || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        /> 
         <TextField
-        name="ExternalLoadKey"
-        label="ExternalLoadKey"
-        value={invoiceData.ExternalLoadKey || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="InvoiceImportedStatusId"
-        label="InvoiceImportedStatusId"
-        value={invoiceData.InvoiceImportedStatusId || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="InvoiceNo"
-        label="InvoiceNo"
-        value={invoiceData.InvoiceNo || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="ReferenceNo"
-        label="ReferenceNo"
-        value={invoiceData.ReferenceNo || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="GrossAmount"
-        label="GrossAmount"
-        value={invoiceData.GrossAmount || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="PayorAdjustmentAmount"
-        label="PayorAdjustmentAmount"
-        value={invoiceData.PayorAdjustmentAmount || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="NetAmount"
-        label="NetAmount"
-        value={invoiceData.NetAmount || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="DueDate"
-        label="DueDate"
-        value={invoiceData.DueDate || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="ApprovedDate"
-        label="ApprovedDate"
-        value={invoiceData.ApprovedDate || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="Term"
-        label="Term"
-        value={invoiceData.Term || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="StatusNote"
-        label="StatusNote"
-        value={invoiceData.StatusNote || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="Division"
-        label="Division"
-        value={invoiceData.Division || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="LineItems[0].Amount"
-        label="LineItems[0].Amount"
-        value={invoiceData.LineItems[0].Amount || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="LineItems[0].Description"
-        label="LineItems[0].Description"
-        value={invoiceData.LineItems[0].Description || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="LineItems[1].Amount"
-        label="LineItems[1].Amount"
-        value={invoiceData.LineItems[1].Amount || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="LineItems[1].Description"
-        label="LineItems[1].Description"
-        value={invoiceData.LineItems[1].Description || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="AdditionalData[0].Field"
-        label="AdditionalData[0].Field"
-        value={invoiceData.AdditionalData[0].Field || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="AdditionalData[0].Value"
-        label="AdditionalData[0].Value"
-        value={invoiceData.AdditionalData[0].Value || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="AdditionalData[0].Type"
-        label="AdditionalData[0].Type"
-        value={invoiceData.AdditionalData[0].Type || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-        />
-
-        <TextField
-        name="AdditionalData[1].Field"
-        label="AdditionalData[1].Field"
-        value={invoiceData.AdditionalData[1].Field || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
+          name="ExternalLoadKey"
+          label="ExternalLoadKey"
+          value={invoiceData.ExternalLoadKey || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
         />
         <TextField
-        name="AdditionalData[1].Value"
-        label="AdditionalData[1].Value"
-        value={invoiceData.AdditionalData[1].Value || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
+          name="InvoiceImportedStatusId"
+          label="InvoiceImportedStatusId"
+          value={invoiceData.InvoiceImportedStatusId || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
         />
         <TextField
-        name="AdditionalData[1].Type"
-        label="AdditionalData[1].Type"
-        value={invoiceData.AdditionalData[1].Type || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
+          name="InvoiceNo"
+          label="InvoiceNo"
+          value={invoiceData.InvoiceNo || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
         />
-      <Button variant="contained" color="primary" type="submit" className={classes.button}>
+        <TextField
+          name="ReferenceNo"
+          label="ReferenceNo"
+          value={invoiceData.ReferenceNo || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="GrossAmount"
+          label="GrossAmount"
+          value={invoiceData.GrossAmount || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="PayorAdjustmentAmount"
+          label="PayorAdjustmentAmount"
+          value={invoiceData.PayorAdjustmentAmount || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="NetAmount"
+          label="NetAmount"
+          value={invoiceData.NetAmount || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="DueDate"
+          label="DueDate"
+          value={invoiceData.DueDate || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="ApprovedDate"
+          label="ApprovedDate"
+          value={invoiceData.ApprovedDate || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="StatusNote"
+          label="StatusNote"
+          value={invoiceData.StatusNote || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="LineItems[0].Amount"
+          label="LineItems[0].Amount"
+          value={invoiceData.LineItems[0].Amount || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="LineItems[0].Description"
+          label="LineItems[0].Description"
+          value={invoiceData.LineItems[0].Description || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="LineItems[1].Amount"
+          label="LineItems[1].Amount"
+          value={invoiceData.LineItems[1].Amount || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="LineItems[1].Description"
+          label="LineItems[1].Description"
+          value={invoiceData.LineItems[1].Description || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[0].Field"
+          label="AdditionalData[0].Field"
+          value={invoiceData.AdditionalData[0].Field || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[0].Value"
+          label="AdditionalData[0].Value"
+          value={invoiceData.AdditionalData[0].Value || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[0].Type"
+          label="AdditionalData[0].Type"
+          value={invoiceData.AdditionalData[0].Type || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[1].Field"
+          label="AdditionalData[1].Field"
+          value={invoiceData.AdditionalData[1].Field || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[1].Value"
+          label="AdditionalData[1].Value"
+          value={invoiceData.AdditionalData[1].Value || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+        <TextField
+          name="AdditionalData[1].Type"
+          label="AdditionalData[1].Type"
+          value={invoiceData.AdditionalData[1].Type || ''}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          className={classes.textField}
+        />
+      <Button name="submitBtn" type="submit" className={classes.button} variant="contained" color="primary">
         Create Invoice
       </Button>
     </form>

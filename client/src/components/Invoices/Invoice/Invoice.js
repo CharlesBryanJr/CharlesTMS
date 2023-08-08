@@ -32,10 +32,6 @@ const Invoice = ({ invoice, setCurrentId }) => {
         className={classes.cardAction}
         onClick={handleInvoiceDetails}
       >
-        <div className={classes.overlay}>
-          <Typography variant="h6">{invoice.InvoiceNumber}</Typography>
-          <Typography variant="body2">{moment(invoice.createdAt).fromNow()}</Typography>
-        </div>
         <div className={classes.overlay2} name="edit">
           <Button
             onClick={handleEdit}

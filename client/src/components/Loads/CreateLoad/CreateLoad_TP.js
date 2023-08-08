@@ -10,77 +10,66 @@ const CreateLoad = ({ setCurrentId }) => {
   const dispatch = useDispatch();
 
   const empty_LoadData = {
-    "ExternalLoadKey": "Load42821",
-    "ExternalPayeeKey": "CarrierId123",
-    "LoadStatusId": 3,
-    "ReferenceNo": "54321",
-    "PickupDate": "2018-08-08",
-    "OriginName": "Shipper Co",
-    "OriginAddress1": "123 Main St",
+    "ExternalLoadKey": "",
+    "ExternalPayeeKey": "",
+    "LoadStatusId": 0,
+    "ReferenceNo": "",
+    "PickupDate": "",
+    "OriginName": "",
+    "OriginAddress1": "",
     "OriginAddress2": "",
-    "OriginCity": "Coppell",
-    "OriginState": "TX",
-    "OriginPostalCode": "75019",
-    "OriginCountry": "USA",
-    "DeliveryDate": "2018-08-10",
-    "DestinationConsignee": "Shipper Co",
-    "DestinationAddress1": "123 Main St",
+    "OriginCity": "",
+    "OriginState": "",
+    "OriginPostalCode": "",
+    "OriginCountry": "",
+    "DeliveryDate": "",
+    "DestinationConsignee": "",
+    "DestinationAddress1": "",
     "DestinationAddress2": "",
-    "DestinationCity": "Bloomington",
-    "DestinationState": "MN",
-    "DestinationPostalCode": "55438",
-    "DestinationCountry": "US",
-    "Distance": 897,
-    "DistanceUnits": 1,
-    "TotalWeight": 500,
-    "WeightUnitTypeId": 1,
-    "EquipmentType": 2,
-    "Volume": 500,
-    "VolumeUnits": 1,
-    "LoadDescription": "Fluffy Pillows",
+    "DestinationCity": "",
+    "DestinationState": "",
+    "DestinationPostalCode": "",
+    "DestinationCountry": "",
+    "Distance": 0,
+    "DistanceUnits": 0,
+    "TotalWeight": 0,
+    "WeightUnitTypeId": 0,
+    "EquipmentType": 0,
+    "Volume": 0,
+    "VolumeUnits": 0,
+    "LoadDescription": "",
     "LTLFlag": false,
-    "AssignedTractorNumber": "123",
-    "AssignedTrailerNumber": "456",
-    "Division": "",
+    "AssignedTractorNumber": "",
+    "AssignedTrailerNumber": "",
     "LineItems": [
       {
-        "ChargeTypeId": 1,
-        "Description": "Linehaul",
-        "Amount": 1200
+        "ChargeTypeId": 0,
+        "Description": "",
+        "Amount": 0
       },
-      {
-        "ChargeTypeId": 2,
-        "Description": "Fuel Surcharge",
-        "Amount": -1500
-      }
     ],
     "AdditionalData": [
       {
-        "Field": "Load#2",
-        "Value": "123456",
-        "Type": 1
+        "Field": "",
+        "Value": "",
+        "Type": 0
       },
-      {
-        "Field": "POD#",
-        "Value": "888888801",
-        "Type": 1
-      }
     ],
     "Stops": [
       {
-        "Consignee": "Stop User",
-        "Sequence": "2",
-        "Address1": "632 42nd St2",
-        "Address2": "Unit 2",
-        "City": "Ft Worth",
-        "State": "TX",
-        "PostalCode": "76036",
-        "Country": "US",
-        "StopDeliveryDate": "2016-07-16"
+        "Consignee": "",
+        "Sequence": "",
+        "Address1": "",
+        "Address2": "",
+        "City": "",
+        "State": "",
+        "PostalCode": "",
+        "Country": "",
+        "StopDeliveryDate": ""
       }
-    ],
+    ]
   };  
-  
+
   const [loadData, setLoadData] = useState(empty_LoadData);
 
   const handleSubmit = (e) => {
@@ -94,14 +83,16 @@ const CreateLoad = ({ setCurrentId }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const nestedProperties = name.split('.');
+  
     if (nestedProperties.length > 1) {
       setLoadData((prevLoadData) => {
         const updatedData = { ...prevLoadData };
         let currentLevel = updatedData;
         for (let i = 0; i < nestedProperties.length - 1; i++) {
           const nestedProperty = nestedProperties[i];
+  
           if (!currentLevel[nestedProperty]) {
-            currentLevel[nestedProperty] = {};
+            currentLevel[nestedProperty] = Array.isArray(prevLoadData[nestedProperty]) ? [] : {};
           }
           currentLevel = currentLevel[nestedProperty];
         }
@@ -113,37 +104,14 @@ const CreateLoad = ({ setCurrentId }) => {
         return { ...prevLoadData, [name]: value };
       });
     }
-  };  
-
-  const generateRandomData = () => {
-    const randomLoadData = {};
-
-    for (const key in empty_LoadData) {
-      if (empty_LoadData.hasOwnProperty(key)) {
-        if (typeof empty_LoadData[key] === "string") {
-          randomLoadData[key] = generateRandomString();
-        } else if (typeof empty_LoadData[key] === "boolean") {
-          randomLoadData[key] = generateRandomBoolean();
-        } else if (typeof empty_LoadData[key] === "number") {
-          randomLoadData[key] = generateRandomNumber();
-        } else if (Array.isArray(empty_LoadData[key])) {
-          randomLoadData[key] = generateRandomArray(empty_LoadData[key]);
-        } else if (typeof empty_LoadData[key] === "object") {
-          randomLoadData[key] = generateRandomObject(empty_LoadData[key]);
-        }
-      }
-    }
-    setLoadData(randomLoadData);
   };
 
   const generateRandomString = () => {
-    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const length = Math.floor(Math.random() * 10) + 1;
     let result = "";
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
   };
@@ -152,28 +120,111 @@ const CreateLoad = ({ setCurrentId }) => {
     return Math.random() < 0.5;
   };
 
-  const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100) + 1;
+  const generateRandomNumber = (min = 1, max = 100) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  const generateRandomArray = () => {
-    const length = Math.floor(Math.random() * 5) + 1;
-    const array = [];
+  const generateRandomLineItems = (length) => {
+    const lineItems = [];
     for (let i = 0; i < length; i++) {
-      array.push(generateRandomString());
+      lineItems.push({
+        ChargeTypeId: generateRandomNumber(1, 4),
+        Description: generateRandomString(),
+        Amount: generateRandomNumber(0, 1000)
+      });
     }
-    return array;
+    return lineItems;
   };
+
+  const generateRandomAdditionalData = (length) => {
+    const arr = [];
+    for (let i = 0; i < length; i++) {
+      arr.push({
+        "Field": generateRandomString(),
+        "Value": generateRandomString(),
+        "Type": generateRandomNumber(0, 2)
+      });
+    }
+    return arr;
+  };
+
+  const generateRandomDate = () => {
+    const today = new Date();
+    const futureDate = new Date(today.getTime() + generateRandomNumber(1, 60) * 24 * 60 * 60 * 1000);
+    const year = futureDate.getFullYear();
+    const month = futureDate.getMonth() + 1; // Months are zero-based, so add 1
+    const day = futureDate.getDate();
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  };  
+
+  const generateRandomStops = (length) => {
+    const stops = [];
+    for (let i = 0; i < length; i++) {
+      stops.push({
+        Consignee: generateRandomString(),
+        Sequence: generateRandomString(),
+        Address1: generateRandomString(),
+        Address2: generateRandomString(),
+        City: generateRandomString(),
+        State: generateRandomString(),
+        PostalCode: generateRandomString(),
+        Country: generateRandomString(),
+        StopDeliveryDate: generateRandomDate() // Generate a random date string
+      });
+    }
+    return stops;
+  };
+  
 
   const generateRandomObject = () => {
-    const obj = {};
-    obj.name = generateRandomString();
-    obj.line_1 = generateRandomString();
-    obj.line_2 = generateRandomString();
-    obj.city = generateRandomString();
-    obj.state = generateRandomString();
-    obj.postal_code = generateRandomString();
+    const obj = {
+      "ExternalPayeeKey": generateRandomString()
+    }
     return obj;
+  };
+
+  const generateRandomData = (empty_LoadData) => {
+    const randomLoadData = {};
+  
+    for (const key in empty_LoadData) {
+      if (empty_LoadData.hasOwnProperty(key)) {
+        if (key === "PickupDate" || key === "DeliveryDate") {
+          randomLoadData[key] = generateRandomDate();
+        } else if (key === "LoadStatusId") {
+          randomLoadData[key] = generateRandomNumber(1, 6)
+        } else if (key === "DistanceUnits" || key === "WeightUnitTypeId" || key === "VolumeUnits") {
+          randomLoadData[key] = generateRandomNumber(1, 2)
+        } else if (key === "EquipmentType" || key === "WeightUnitTypeId") {
+          randomLoadData[key] = generateRandomNumber(1, 4)
+        } else if (typeof empty_LoadData[key] === 'string') {
+          randomLoadData[key] = generateRandomString();
+        } else if (typeof empty_LoadData[key] === 'boolean') {
+          randomLoadData[key] = generateRandomBoolean();
+        } else if (typeof empty_LoadData[key] === 'number') {
+          randomLoadData[key] = generateRandomNumber();
+        } else if (Array.isArray(empty_LoadData[key])) {
+          if (key === "LineItems") {
+            const length = generateRandomNumber(1, 3);
+            randomLoadData[key] = generateRandomLineItems(length);
+          } else if (key === "AdditionalData") {
+            const length = generateRandomNumber(1, 3);
+            randomLoadData[key] = generateRandomAdditionalData(length);
+          } else if (key == "Stops"){
+            const length = generateRandomNumber(1, 3);
+            randomLoadData[key] = generateRandomStops(length);
+          }
+        } else if (typeof empty_LoadData[key] === 'object') {
+          randomLoadData[key] = generateRandomObject();
+        }
+      }
+    }
+    return randomLoadData;
+  };
+
+  const handleGenerateRandomData = (e) => {
+    e.preventDefault();
+    const randomLoadData = generateRandomData(empty_LoadData);
+    setLoadData(randomLoadData);
   };
 
   return (
@@ -183,7 +234,7 @@ const CreateLoad = ({ setCurrentId }) => {
         color="primary"
         type="submit"
         className={classes.button}
-        onClick={generateRandomData}
+        onClick={handleGenerateRandomData}
       >
         Generate Random Load Data
       </Button>
@@ -471,102 +522,70 @@ const CreateLoad = ({ setCurrentId }) => {
         fullWidth
         className={classes.textField}
       />
-      <TextField
-        name="Division"
-        label="Division"
-        value={loadData.Division || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[0].ChargeTypeId"
-        label="Line Item 1 - Charge Type Id"
-        value={loadData.LineItems && loadData.LineItems[0].ChargeTypeId}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[0].Description"
-        label="Line Item 1 - Description"
-        value={loadData.LineItems && loadData.LineItems[0].Description}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[0].Amount"
-        label="Line Item 1 - Amount"
-        value={loadData.LineItems && loadData.LineItems[0].Amount}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[1].ChargeTypeId"
-        label="Line Item 2 - Charge Type Id"
-        value={loadData.LineItems && loadData.LineItems[1].ChargeTypeId}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[1].Description"
-        label="Line Item 2 - Description"
-        value={loadData.LineItems && loadData.LineItems[1].Description}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="LineItems[1].Amount"
-        label="Line Item 2 - Amount"
-        value={loadData.LineItems && loadData.LineItems[1].Amount}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="AdditionalData[0].Field"
-        label="Additional Data 1 - Field"
-        value={loadData.AdditionalData && loadData.AdditionalData[0].Field}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="AdditionalData[0].Value"
-        label="Additional Data 1 - Value"
-        value={loadData.AdditionalData && loadData.AdditionalData[0].Value}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="AdditionalData[0].Type"
-        label="Additional Data 1 - Type"
-        value={loadData.AdditionalData && loadData.AdditionalData[0].Type}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-    <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        className={classes.button}
-    >
+      {loadData.LineItems && loadData.LineItems.map((item, index) => (
+        <React.Fragment key={`lineItem-${index}`}>
+          <TextField
+            name={`LineItems[${index}].ChargeTypeId`}
+            label={`Line Item ${index + 1} - Charge Type Id`}
+            value={item.ChargeTypeId}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+          <TextField
+            name={`LineItems[${index}].Description`}
+            label={`Line Item ${index + 1} - Description`}
+            value={item.Description}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+          <TextField
+            name={`LineItems[${index}].Amount`}
+            label={`Line Item ${index + 1} - Amount`}
+            value={item.Amount}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+        </React.Fragment>
+      ))}
+
+      {loadData.AdditionalData && loadData.AdditionalData.map((data, index) => (
+        <React.Fragment key={`additionalData-${index}`}>
+          <TextField
+            name={`AdditionalData[${index}].Field`}
+            label={`Additional Data ${index + 1} - Field`}
+            value={data.Field}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+          <TextField
+            name={`AdditionalData[${index}].Value`}
+            label={`Additional Data ${index + 1} - Value`}
+            value={data.Value}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+          <TextField
+            name={`AdditionalData[${index}].Type`}
+            label={`Additional Data ${index + 1} - Type`}
+            value={data.Type}
+            onChange={handleChange}
+            variant="outlined"
+            fullWidth
+            className={classes.textField}
+          />
+        </React.Fragment>
+      ))}
+      <Button name="submitBtn" type="submit" className={classes.button} variant="contained" color="primary">
         Create Load
       </Button>
     </form>

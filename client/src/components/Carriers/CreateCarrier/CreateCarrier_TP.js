@@ -10,48 +10,40 @@ const CreateCarrier = ({ setCurrentId }) => {
   const dispatch = useDispatch();
 
   const empty_carrierData = {
-    "ExternalPayeeKey": "TestCarrier1",
-    "CompanyName": "Test Carrier 1",
-    "MCNumber": "555555",
-    "DOTNumber": "444444",
+    "ExternalPayeeKey": "",
+    "CompanyName": "",
+    "MCNumber": "",
+    "DOTNumber": "",
     "Scac": "",
-    "Addr1": "1234 Street",
+    "Addr1": "",
     "Addr2": "",
-    "City": "Bloomington",
-    "State": "MN",
-    "PostalCode": "55437",
-    "Country": "USA",
-    "PrimaryContact": "Paul Dillon",
-    "PhoneNumber": "9523931682",
-    "PrimaryEmail": "pdillon@triumphpay.com",
-    "RemitName": "Test Carrier 1",
-    "RemitAddr1": "1234 Street",
+    "City": "",
+    "State": "",
+    "PostalCode": "",
+    "Country": "",
+    "PrimaryContact": "",
+    "PhoneNumber": "",
+    "PrimaryEmail": "",
+    "RemitName": "",
+    "RemitAddr1": "",
     "RemitAddr2": "",
-    "RemitCity": "Bloomington",
-    "RemitState": "MN",
-    "RemitPostalCode": "55437",
-    "RemitCountry": "USA",
-    "RelationshipCategory": "",
-    "Division": "",
-    "DefaultPayoutTermCode": "QP",
+    "RemitCity": "",
+    "RemitState": "",
+    "RemitPostalCode": "",
+    "RemitCountry": "",
+    "DefaultPayoutTermCode": "",
     "DisablePayee": false,
-    "AltPhoneNumbers": [
-      "111-111-1111"
-    ],
-    "FaxNumber": "412-859-2326",
-    "AltEmails": [
-      "pdillon@triumphpay.com"
-    ],
-    "IsQuickPayAllowed": true,
+    "FaxNumber": "",
+    "IsQuickPayAllowed": false,
     "AdditionalData": [
       {
-        "Field": "Lumper",
-        "Value": "30",
-        "Type": 1
+        "Field": "",
+        "Value": "",
+        "Type": 0
       }
     ],
     "StatusNote": ""
-  };
+  };  
   
   const [carrierData, setCarrierData] = useState(empty_carrierData);
 
@@ -87,67 +79,78 @@ const CreateCarrier = ({ setCurrentId }) => {
       });
     }
   };  
+  
+  const generateRandomString = () => {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const length = Math.floor(Math.random() * 10) + 1;
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
+
+  const generateRandomBoolean = () => {
+    return Math.random() < 0.5;
+  };
+
+  const generateRandomNumber = (min = 1, max = 100) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const generateRandomArrayData = (length) => {
+    const arr = [];
+    for (let i = 0; i < length; i++) {
+      arr.push({
+        "Field": generateRandomString(),
+        "Value": generateRandomString(),
+        "Type": generateRandomNumber(0, 2)
+      });
+    }
+    return arr;
+  };
+
+  const generateRandomObject = () => {
+    const obj = {
+      "ExternalPayeeKey": generateRandomString()
+    }
+    return obj;
+  };
 
   const generateRandomData = (empty_carrierData) => {
     const randomCarrierData = {};
-    
+  
     for (const key in empty_carrierData) {
       if (empty_carrierData.hasOwnProperty(key)) {
-        if (typeof empty_carrierData[key] === 'string') {
+        if (key === "DefaultPayoutTermCode") {
+          randomCarrierData[key] = "SP";
+        }
+        else if (typeof empty_carrierData[key] === 'string') {
           randomCarrierData[key] = generateRandomString();
         } else if (typeof empty_carrierData[key] === 'boolean') {
           randomCarrierData[key] = generateRandomBoolean();
         } else if (typeof empty_carrierData[key] === 'number') {
           randomCarrierData[key] = generateRandomNumber();
         } else if (Array.isArray(empty_carrierData[key])) {
-          randomCarrierData[key] = generateRandomArray();
+          if (key === "AdditionalData") {
+            const length = generateRandomNumber(1, 3);
+            randomCarrierData[key] = generateRandomArrayData(length);
+          } else {
+            randomCarrierData[key] = generateRandomString();
+          }
         } else if (typeof empty_carrierData[key] === 'object') {
           randomCarrierData[key] = generateRandomObject();
         }
       }
     }
-    console.log(randomCarrierData);
+    return randomCarrierData;
+  };
+
+  const handleGenerateRandomData = (e) => {
+    e.preventDefault();
+    const randomCarrierData = generateRandomData(empty_carrierData);
     setCarrierData(randomCarrierData);
   };
-  
-const generateRandomString = () => {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const length = Math.floor(Math.random() * 10) + 1;
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-};
-
-const generateRandomBoolean = () => {
-  return Math.random() < 0.5;
-};
-
-const generateRandomNumber = () => {
-  return Math.floor(Math.random() * 100) + 1;
-};
-
-const generateRandomArray = () => {
-  const length = Math.floor(Math.random() * 5) + 1;
-  const array = [];
-  for (let i = 0; i < length; i++) {
-    array.push(generateRandomString());
-  }
-  return array;
-};
-
-const generateRandomObject = () => {
-  const obj = {};
-  obj.name = generateRandomString();
-  obj.line_1 = generateRandomString();
-  obj.line_2 = generateRandomString();
-  obj.city = generateRandomString();
-  obj.state = generateRandomString();
-  obj.postal_code = generateRandomString();
-  return obj;
-};
-
 
   return (
     <form autoComplete="off" onSubmit={handleSubmit} className={classes.form}>
@@ -156,7 +159,7 @@ const generateRandomObject = () => {
         color="primary" 
         type="submit" 
         className={classes.button} 
-        onClick={generateRandomData}
+        onClick={handleGenerateRandomData}
       >
         Generate Random Carrier Data
       </Button>
@@ -351,24 +354,6 @@ const generateRandomObject = () => {
         className={classes.textField}
       />
       <TextField
-        name="RelationshipCategory"
-        label="RelationshipCategory"
-        value={carrierData.RelationshipCategory || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="Division"
-        label="Division"
-        value={carrierData.Division || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
         name="DefaultPayoutTermCode"
         label="DefaultPayoutTermCode"
         value={carrierData.DefaultPayoutTermCode || ''}
@@ -391,27 +376,9 @@ const generateRandomObject = () => {
         <MenuItem value="false">False</MenuItem>
       </TextField>
       <TextField
-        name="AltPhoneNumbers[0]"
-        label="AltPhoneNumbers[0]"
-        value={carrierData.AltPhoneNumbers[0] || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
         name="FaxNumber"
         label="FaxNumber"
         value={carrierData.FaxNumber || ''}
-        onChange={handleChange}
-        variant="outlined"
-        fullWidth
-        className={classes.textField}
-      />
-      <TextField
-        name="AltEmails[0]"
-        label="AltEmails[0]"
-        value={carrierData.AltEmails[0] || ''}
         onChange={handleChange}
         variant="outlined"
         fullWidth
@@ -466,7 +433,7 @@ const generateRandomObject = () => {
         fullWidth
         className={classes.textField}
       />
-      <Button variant="contained" color="primary" type="submit" className={classes.button}>
+      <Button name="submitBtn" type="submit" className={classes.button} variant="contained" color="primary">
         Create Carrier
       </Button>
     </form>
