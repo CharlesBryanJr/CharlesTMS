@@ -1,4 +1,4 @@
-# Pause
+# CharlesTMS
 
 As a proficient Full Stack Developer in MERN technologies, I've successfully created "CharlesTMS," a web app using React, Node.js, Express, and MongoDB. I expertly merged frontend and backend skills to design a user-friendly, responsive interface with seamless functionality.
 
