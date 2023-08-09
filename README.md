@@ -1,12 +1,12 @@
 # Pause
 
-As a Full Stack Developer proficient in MERN stack technologies, I have successfully built a web application called "Pause" using React, Node.js, Express, and MongoDB. With expertise in both frontend and backend development, I implemented a user-friendly and responsive interface with seamless functionality.
+As a proficient Full Stack Developer in MERN technologies, I've successfully created "CharlesTMS," a web app using React, Node.js, Express, and MongoDB. I expertly merged frontend and backend skills to design a user-friendly, responsive interface with seamless functionality.
 
-The "Pause" app allows users to share and view interesting events from their lives on a social media platform. From start to finish, I worked on all aspects of the application, including designing and developing the user interface, implementing server-side logic, integrating with third-party APIs, and deploying the application to a cloud platform.
+"CharlesTMS" is a customized MERN stack TMS, optimizing goods flow, improving compliance, and streamlining shipment documentation. This involved crafting a responsive UI, coding server-side functions, integrating TriumphPay's external API, managing files adeptly, and deploying onto a cloud platform.
 
-Utilizing my knowledge of MERN stack technologies, I ensured that the application was efficient, secure, and scalable. By utilizing React for the frontend and Node.js, Express, and MongoDB for the backend, I was able to build a dynamic, single-page application that provides a smooth user experience.
+Leveraging MERN knowledge, I ensured an efficient, secure, and scalable app. Combining React frontend with Node.js, Express, and MongoDB backend, I built a dynamic single-page app that guarantees a smooth user experience.
 
-Overall, my experience in developing the "Pause" application showcases my ability to work with MERN stack technologies and build a functional and user-friendly web application from start to finish.
+Overall, my "CharlesTMS" development underscores my MERN proficiency, showcasing my capacity to create a functional, user-friendly web app end to end.
 
 Setup:
 - run ```npm i && npm start``` for both client and server side to start the app

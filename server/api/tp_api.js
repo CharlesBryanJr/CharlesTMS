@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const TP = axios.create({ baseURL: 'https://api.onb-triumphpay.com' });
 
-// https://secure.onb-triumphpay.com/
 // Function to get the access token using BasicAuthentication
 // "api_key": "c89e2a50-d63e-4e13-8027-5af22d656103",
 // "username": "charlesabryanjr@gmail.com",
