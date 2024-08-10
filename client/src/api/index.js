@@ -50,3 +50,15 @@ export const fetchDraft = (draftDateFrom, draftDateTo) => API.get('/drafts', {
     draftDateTo,
   },
 });
+
+export const askQuestion_local = (prompt) => API.post('http://127.0.0.1:5001/api/ask', prompt, {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+export const askQuestion_ec2 = (prompt) => API.post('http://54.244.177.73:8000/api/ask', prompt, {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});

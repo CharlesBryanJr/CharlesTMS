@@ -67,6 +67,16 @@ const Dashboard = () => {
             </li>
           </ul>
         </div>
+        <div className={classes.item}>
+          <Typography variant="h6">Query</Typography>
+          <ul className={classes.list}>
+            <li className={classes.listItem}>
+              <Link to="/Query" className={classes.link}>
+                Athena Query
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

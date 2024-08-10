@@ -22,6 +22,8 @@ import CreateInvoice_UAPI from './components/Invoices/CreateInvoice/CreateInvoic
 
 import Draft from './components/Drafts/Draft';
 
+import Query from './components/Queries/Query';
+
 const App = () => {
   const user = JSON.parse(localStorage.getItem('profile'));
 
@@ -40,6 +42,7 @@ const App = () => {
           <Route path="/Invoices" exact component={Invoices} />
           <Route path="/CreateInvoice_TP" exact component={CreateInvoice_TP} />
           <Route path="/Draft" exact component={Draft} />
+          <Route path="/Query" exact component={Query} />
         </Switch>
       </Container>
     </BrowserRouter>
