@@ -223,7 +223,7 @@ const Query = () => {
         variant="outlined"
         name="database"
         value={state.database}
-        onChange={handleChange}
+        // onChange={handleChange}
         className={classes.input}
       />
 
