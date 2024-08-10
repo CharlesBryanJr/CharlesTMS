@@ -1,7 +1,7 @@
 const { START_LOADING, END_LOADING, CREATE_QUERY } = require('../constants/actionTypes');
 const api = require('../api/index.js');
 
-const create_query = (query, history) => async (dispatch) => {
+export const create_query = (query, history) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
     console.log('-'.repeat(30));
@@ -38,5 +38,3 @@ const create_query = (query, history) => async (dispatch) => {
     dispatch({ type: END_LOADING });
   }
 };
-
-module.exports = { create_query };
