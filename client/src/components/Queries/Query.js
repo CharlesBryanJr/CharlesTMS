@@ -297,22 +297,6 @@ const Query = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth variant="outlined" className={classes.formControl}>
-                <InputLabel>Writer Explanation</InputLabel>
-                <Select
-                  value={state.writer_explanation || ''}
-                  onChange={handleChange}
-                  name="writer_explanation"
-                  label="Writer Explanation"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {state.writer_explanation && (
-                    <MenuItem value={state.writer_explanation}>{state.writer_explanation}</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
             </Grid>
             {state.presigned_url && (
               <Grid item xs={12}>
