@@ -8,8 +8,8 @@ export const create_query = (query, history) => async (dispatch) => {
     console.log('create_query');
 
     try {
-      const data = await api.askQuestion_local(query);
-      // const data = await api.askQuestion_ec2(query);
+      // const data = await api.askQuestion_local(query);
+      const data = await api.askQuestion_ec2(query);
       console.log('-'.repeat(30));
       dispatch({ type: CREATE_QUERY, payload: query });
       console.log('-'.repeat(30));
