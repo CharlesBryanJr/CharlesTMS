@@ -38,10 +38,13 @@ const Navbar = () => {
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
-      <Link to="/" className={classes.brandContainer}>
-        <img component={Link} to="/" src={CAB_logo} alt="icon" height="45px" />
-      </Link>
-      <Toolbar className={classes.toolbar}>
+      <Toolbar className={classes.toolbar} style={{ justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/" className={classes.brandContainer}>
+            <img component={Link} to="/" src={CAB_logo} alt="icon" height="45px" />
+          </Link>
+          <Typography variant="h6" style={{ marginLeft: '10px' }}>Charles' Projects</Typography>
+        </div>
         {user?.result ? (
           <div className={classes.profile}>
             <Avatar className={classes.purple} alt={user?.result.name} src={user?.result.imageUrl}>
@@ -54,14 +57,7 @@ const Navbar = () => {
               Logout
             </Button>
           </div>
-        ) : (
-          <div className={classes.profile}>
-            <Typography variant="h6">CharlesTMS</Typography>
-            <Button component={Link} to="/auth" variant="contained" color="primary">
-              Sign In
-            </Button>
-          </div>
-        )}
+        ) : null}
       </Toolbar>
     </AppBar>
   );

@@ -24,13 +24,17 @@ import { create_query } from '../../actions/Queries';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '98%',
+    margin: '0 auto',  // Center the content horizontally
     backgroundColor: '#424242',
     color: '#fff',
     padding: theme.spacing(2),
   },
   title: {
     marginBottom: theme.spacing(1),
+  },
+  subtitle: {
+    marginBottom: theme.spacing(2),
   },
   input: {
     marginBottom: theme.spacing(2),
@@ -88,10 +92,13 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.dark,
     },
   },
+  exampleQueries: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const initialState = {
-  query: 'write a SQL query calculates the total number of COVID-19 tests conducted in each state and then list these states in descending order based on the volume of tests, starting with the state that has conducted the most tests.',
+  query: '',
   database: 'covid-19',
   review_define_objective: false,
   review_before_generate: false,
@@ -109,6 +116,12 @@ const initialState = {
   history: [],
 };
 
+const exampleQueries = [
+  "Calculate the total number of COVID-19 tests conducted in each state and list them in descending order.",
+  "Find the average daily increase in COVID-19 cases for each state during the first quarter of 2020.",
+  "Determine which states have seen a decrease in the number of daily cases over the past two weeks."
+];
+
 const Query = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -120,6 +133,13 @@ const Query = () => {
     setState((prevState) => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleExampleClick = (example) => {
+    setState((prevState) => ({
+      ...prevState,
+      query: example,
     }));
   };
 
@@ -171,6 +191,30 @@ const Query = () => {
 
   return (
     <Paper className={classes.root}>
+      <Typography variant="h4" className={classes.title}>
+        AI-Powered Natural Language to Athena SQL Converter
+      </Typography>
+
+      <Typography variant="body1" className={classes.subtitle}>
+        In today's data-driven world, being able to query databases efficiently is key. While SQL is the standard for database interactions, not everyone is comfortable writing SQL queries. That's where our AI-powered agent comes in, designed to translate natural language queries into Athena SQL commands using LangChain and LangGraph. This makes accessing data as easy as asking a question.
+      </Typography>
+
+      <div className={classes.exampleQueries}>
+        <Typography variant="h6" className={classes.title}>
+          Example Queries
+        </Typography>
+        {exampleQueries.map((example, index) => (
+          <Typography
+            key={index}
+            variant="body2"
+            onClick={() => handleExampleClick(example)}
+            style={{ cursor: 'pointer', marginBottom: '0.5rem' }}
+          >
+            {example}
+          </Typography>
+        ))}
+      </div>
+
       <Typography variant="h6" className={classes.title}>
         Database
       </Typography>
@@ -203,20 +247,6 @@ const Query = () => {
           onClick={(e) => handleSubmit(e, 'generate')}
         >
           GENERATE Query
-        </Button>
-        <Button
-          variant="contained"
-          className={classes.button}
-          onClick={(e) => handleSubmit(e, 'continue')}
-        >
-          CONTINUE Query
-        </Button>
-        <Button
-          variant="contained"
-          className={classes.button}
-          onClick={handleToggleCheckboxes}
-        >
-          {hideCheckboxes ? 'Show Checkboxes' : 'Hide Checkboxes'}
         </Button>
       </div>
 
