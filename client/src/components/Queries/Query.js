@@ -85,11 +85,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   urlLink: {
-    color: theme.palette.primary.main,
+    color: '#FFD700', // Gold color for better contrast on dark gray
     marginLeft: theme.spacing(1),
     cursor: 'pointer',
     '&:hover': {
-      color: theme.palette.primary.dark,
+      color: '#FFA500', // Darker shade of yellow (orange) on hover
     },
   },
   exampleQueries: {
@@ -143,8 +143,11 @@ const Query = () => {
     }));
   };
 
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (e, action) => {
     e.preventDefault();
+    setError(null); // Reset error state before each submission
     try {
       const result = await dispatch(create_query({ ...state, action }));
 
@@ -165,13 +168,18 @@ const Query = () => {
           ...(result?.thread || {}),
         },
         draftRev: result?.draftRev ?? prevState.draftRev,
-        count: result?.count !== '' ? Number(result.count) : prevState.count,
+        count: result?.count !== undefined ? Number(result.count) : prevState.count,
         writer_result: result?.writer_result ?? prevState.writer_result,
         presigned_url: result?.presigned_url ?? prevState.presigned_url,
         history: [...prevState.history, { query: prevState.query, response: result }],
       }));
+      console.log('-'.repeat(30));
+      console.log("state");
+      console.log(state);
+      console.log('-'.repeat(30));
     } catch (error) {
       console.error('Error submitting query:', error);
+      setError('An error occurred while submitting the query. Please try again.');
     }
   };
 
@@ -238,6 +246,12 @@ const Query = () => {
         onChange={handleChange}
         className={classes.input}
       />
+
+      {error && (
+        <Typography color="error" style={{ marginTop: '1rem' }}>
+          {error}
+        </Typography>
+      )}
 
       <div className={classes.buttonGroup}>
         <Button

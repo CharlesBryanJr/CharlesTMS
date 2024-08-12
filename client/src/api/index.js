@@ -60,5 +60,6 @@ export const askQuestion_local = (prompt) => API.post('http://127.0.0.1:5001/api
 export const askQuestion_ec2 = (prompt) => API.post('http://54.244.177.73:8000/api/ask', prompt, {
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 60000 // 1 minute timeout
 });
