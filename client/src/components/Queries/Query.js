@@ -1,23 +1,7 @@
 import React, { useState } from 'react';
 import {
-  TextField,
-  Button,
-  Checkbox,
-  Paper,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Grid,
-  FormGroup,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Link,
+  TextField, Button, Paper, Typography, Grid, FormControl, InputLabel, Select, MenuItem, Link, CircularProgress
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { create_query } from '../../actions/Queries';
@@ -25,19 +9,20 @@ import { create_query } from '../../actions/Queries';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '98%',
-    margin: '0 auto',  // Center the content horizontally
+    margin: '0 auto',
     backgroundColor: '#424242',
     color: '#fff',
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
+    position: 'relative',
   },
   title: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
   },
   subtitle: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
   input: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
     '& .MuiOutlinedInput-root': {
       color: '#fff',
       '& fieldset': {
@@ -48,26 +33,22 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  buttonGroup: {
-    display: 'flex',
-    gap: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
   button: {
-    flex: 1,
+    marginBottom: theme.spacing(3),
   },
   stateInfo: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     gap: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
   manageAgent: {
     backgroundColor: '#616161',
-    color: '#fff',
+    padding: theme.spacing(3),
+    borderRadius: theme.shape.borderRadius,
   },
   formControl: {
-    minWidth: 120,
+    width: '100%',
     '& .MuiOutlinedInput-root': {
       color: '#fff',
       '& fieldset': {
@@ -85,27 +66,35 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   urlLink: {
-    color: '#FFD700', // Gold color for better contrast on dark gray
-    marginLeft: theme.spacing(1),
-    cursor: 'pointer',
+    color: '#FFD700',
     '&:hover': {
-      color: '#FFA500', // Darker shade of yellow (orange) on hover
+      color: '#FFA500',
     },
   },
-  exampleQueries: {
-    marginBottom: theme.spacing(2),
+  exampleQuery: {
+    cursor: 'pointer',
+    marginBottom: '0.5rem',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
   },
 }));
 
 const initialState = {
   query: '',
   database: 'covid-19',
-  review_define_objective: false,
-  review_before_generate: false,
-  review_after_generate: false,
-  review_after_reflect: false,
-  research_critique: false,
-  detailed: false,
   lastNode: null,
   nextNode: null,
   thread: { configurable: { thread_id: '1' } },
@@ -126,60 +115,34 @@ const Query = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
-  const [hideCheckboxes, setHideCheckboxes] = useState(true);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setState((prevState) => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleExampleClick = (example) => {
-    setState((prevState) => ({
-      ...prevState,
-      query: example,
-    }));
+    setState((prevState) => ({ ...prevState, query: example }));
   };
 
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (e, action) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error state before each submission
+    setError(null);
+    setIsLoading(true);
     try {
-      const result = await dispatch(create_query({ ...state, action }));
-
+      const result = await dispatch(create_query({ ...state, action: 'generate' }));
       setState((prevState) => ({
         ...prevState,
-        query: result?.query || prevState.query,
-        database: result?.database || prevState.database,
-        review_define_objective: result?.review_define_objective ?? prevState.review_define_objective,
-        review_before_generate: result?.review_before_generate ?? prevState.review_before_generate,
-        review_after_generate: result?.review_after_generate ?? prevState.review_after_generate,
-        review_after_reflect: result?.review_after_reflect ?? prevState.review_after_reflect,
-        research_critique: result?.research_critique ?? prevState.research_critique,
-        detailed: result?.detailed ?? prevState.detailed,
-        lastNode: result?.lastNode ?? prevState.lastNode,
-        nextNode: result?.nextNode ?? prevState.nextNode,
-        thread: {
-          ...prevState.thread,
-          ...(result?.thread || {}),
-        },
-        draftRev: result?.draftRev ?? prevState.draftRev,
-        count: result?.count !== undefined ? Number(result.count) : prevState.count,
-        writer_result: result?.writer_result ?? prevState.writer_result,
-        presigned_url: result?.presigned_url ?? prevState.presigned_url,
+        ...result,
         history: [...prevState.history, { query: prevState.query, response: result }],
       }));
-      console.log('-'.repeat(30));
-      console.log("state");
-      console.log(state);
-      console.log('-'.repeat(30));
     } catch (error) {
       console.error('Error submitting query:', error);
       setError('An error occurred while submitting the query. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,10 +156,6 @@ const Query = () => {
     ));
   };
 
-  const handleToggleCheckboxes = () => {
-    setHideCheckboxes((prev) => !prev);
-  };
-
   return (
     <Paper className={classes.root}>
       <Typography variant="h4" className={classes.title}>
@@ -204,24 +163,22 @@ const Query = () => {
       </Typography>
 
       <Typography variant="body1" className={classes.subtitle}>
-        In today's data-driven world, being able to query databases efficiently is key. While SQL is the standard for database interactions, not everyone is comfortable writing SQL queries. That's where our AI-powered agent comes in, designed to translate natural language queries into Athena SQL commands using LangChain and LangGraph. This makes accessing data as easy as asking a question.
+        Translate natural language queries into Athena SQL commands using our AI-powered agent. Simply ask a question to access your data.
       </Typography>
 
-      <div className={classes.exampleQueries}>
-        <Typography variant="h6" className={classes.title}>
-          Example Queries
+      <Typography variant="h6" className={classes.title}>
+        Example Queries
+      </Typography>
+      {exampleQueries.map((example, index) => (
+        <Typography
+          key={index}
+          variant="body2"
+          onClick={() => handleExampleClick(example)}
+          className={classes.exampleQuery}
+        >
+          {example}
         </Typography>
-        {exampleQueries.map((example, index) => (
-          <Typography
-            key={index}
-            variant="body2"
-            onClick={() => handleExampleClick(example)}
-            style={{ cursor: 'pointer', marginBottom: '0.5rem' }}
-          >
-            {example}
-          </Typography>
-        ))}
-      </div>
+      ))}
 
       <Typography variant="h6" className={classes.title}>
         Database
@@ -231,8 +188,8 @@ const Query = () => {
         variant="outlined"
         name="database"
         value={state.database}
-        // onChange={handleChange}
         className={classes.input}
+        disabled
       />
 
       <Typography variant="h6" className={classes.title}>
@@ -245,6 +202,8 @@ const Query = () => {
         value={state.query}
         onChange={handleChange}
         className={classes.input}
+        multiline
+        rows={4}
       />
 
       {error && (
@@ -253,80 +212,61 @@ const Query = () => {
         </Typography>
       )}
 
-      <div className={classes.buttonGroup}>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={(e) => handleSubmit(e, 'generate')}
-        >
-          GENERATE Query
-        </Button>
-      </div>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        onClick={handleSubmit}
+        fullWidth
+        disabled={isLoading}
+      >
+        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'GENERATE Query'}
+      </Button>
 
       <div className={classes.stateInfo}>{renderStateInfo()}</div>
 
-      <Accordion className={classes.manageAgent}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">MANAGE AGENT</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Grid container spacing={3}>
-            {!hideCheckboxes && (
-              <Grid item xs={12}>
-                <FormGroup row>
-                  {['review_define_objective', 'review_before_generate', 'review_after_generate', 'review_after_reflect', 'research_critique'].map((item) => (
-                    <FormControlLabel
-                      key={item}
-                      control={
-                        <Checkbox
-                          checked={state[item]}
-                          onChange={handleChange}
-                          name={item}
-                          color="primary"
-                        />
-                      }
-                      label={item.replace(/_/g, ' ')}
-                    />
-                  ))}
-                </FormGroup>
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <FormControl fullWidth variant="outlined" className={classes.formControl}>
-                <InputLabel>Writer Result</InputLabel>
-                <Select
-                  value={state.writer_result || ''}
-                  onChange={handleChange}
-                  name="writer_result"
-                  label="Writer Result"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {state.writer_result && (
-                    <MenuItem value={state.writer_result}>{state.writer_result}</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-            </Grid>
-            {state.presigned_url && (
-              <Grid item xs={12}>
-                <Link
-                  className={classes.urlLink}
-                  href={state.presigned_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Click here to download a CSV of the results
-                </Link>
-              </Grid>
-            )}
+      <Paper className={classes.manageAgent}>
+        <Typography variant="h6" gutterBottom>
+          MANAGE AGENT
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <FormControl fullWidth variant="outlined" className={classes.formControl}>
+              <InputLabel id="writer-result-label">Writer Result</InputLabel>
+              <Select
+                labelId="writer-result-label"
+                value={state.writer_result || ''}
+                onChange={handleChange}
+                name="writer_result"
+                label="Writer Result"
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                {state.writer_result && (
+                  <MenuItem value={state.writer_result}>{state.writer_result}</MenuItem>
+                )}
+              </Select>
+            </FormControl>
           </Grid>
-        </AccordionDetails>
-      </Accordion>
+          {state.presigned_url && (
+            <Grid item xs={12}>
+              <Link
+                className={classes.urlLink}
+                href={state.presigned_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Click here to download a CSV of the results
+              </Link>
+            </Grid>
+          )}
+        </Grid>
+      </Paper>
+
+      {isLoading && (
+        <div className={classes.loadingOverlay}>
+          <CircularProgress color="primary" size={60} />
+        </div>
+      )}
     </Paper>
   );
 };
