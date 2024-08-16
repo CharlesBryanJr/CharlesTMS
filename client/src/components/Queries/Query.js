@@ -159,11 +159,11 @@ const Query = () => {
   return (
     <Paper className={classes.root}>
       <Typography variant="h4" className={classes.title}>
-        AI-Powered Natural Language to Athena SQL Converter
+      Natural Language SQL Query AI Agent
       </Typography>
 
       <Typography variant="body1" className={classes.subtitle}>
-        Translate natural language queries into Athena SQL commands using our AI-powered agent. Simply ask a question to access your data.
+        AI Agent simplifies data access by converting everyday language into SQL queries using LangChain/Graph and Large Language Models (LLMs). This generative AI solution leverages RAG (Retrieval-Augmented Generation) workflows to extract embedded data from a vector database (MongoDB) and a knowledge graph (Neo4j). It then uses OpenAI's LLM APIs to translate natural language into AWS Athena queries and stores the resulting data on AWS S3.
       </Typography>
 
       <Typography variant="h6" className={classes.title}>
@@ -179,6 +179,20 @@ const Query = () => {
           {example}
         </Typography>
       ))}
+
+      <Typography variant="h6" className={classes.title}>
+        
+      </Typography>
+      <Link
+        className={classes.urlLink}
+        href="https://covid19-data-lake-results.s3.us-west-2.amazonaws.com/LLM/natural_language_sql_query_agent.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Click here to download a written narrative - Natural Language SQL Query Agent PDF
+      </Link>
+      <br />
+      <br />
 
       <Typography variant="h6" className={classes.title}>
         Database
