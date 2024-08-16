@@ -64,7 +64,7 @@ export const askQuestion_ec2 = (prompt) => API.post('http://54.244.177.73:8000/a
   timeout: 60000 // 1 minute timeout
 });
 
-export const askQuestion_vercel = (prompt) => API.post('https://natural-language-sql-query-agent-vg69y6d6q.vercel.app/api/ask', prompt, {
+export const askQuestion_vercel = (prompt) => API.post('https://natural-language-sql-query-agent.vercel.app/api/ask', prompt, {
   headers: {
     'Content-Type': 'application/json'
   },
